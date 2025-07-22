@@ -1,79 +1,124 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ödeme Başarısız</title>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background: linear-gradient(135deg, #DC3545, #A71D2A);
-            color: white;
-        }
-        .container {
-            text-align: center;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-        .error-icon {
-            font-size: 64px;
-            margin-bottom: 1rem;
-        }
-        h1 {
-            margin: 0.5rem 0;
-            font-size: 2rem;
-        }
-        p {
-            margin: 1rem 0;
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-        .loading {
-            margin-top: 2rem;
-        }
-        .spinner {
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top: 3px solid white;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="error-icon">❌</div>
-        <h1>Ödeme Başarısız</h1>
-        <p>Ödeme işlemi tamamlanamadı.</p>
-        <p>Uygulamaya yönlendiriliyorsunuz...</p>
-        <div class="loading">
-            <div class="spinner"></div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Ödeme Başarısız</title>
+        <style>
+            body {
+                font-family: "Poppins", sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                margin: 0;
+                background: linear-gradient(135deg, #dc3545, #a71d2a);
+                color: white;
+            }
+            .container {
+                text-align: center;
+                padding: 2rem;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 16px;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            }
+            .error-icon {
+                font-size: 64px;
+                margin-bottom: 1rem;
+            }
+            h1 {
+                margin: 0.5rem 0;
+                font-size: 2rem;
+            }
+            p {
+                margin: 1rem 0;
+                font-size: 1rem;
+                opacity: 0.9;
+            }
+            .loading {
+                margin-top: 2rem;
+            }
+            .spinner {
+                border: 3px solid rgba(255, 255, 255, 0.3);
+                border-top: 3px solid white;
+                border-radius: 50%;
+                width: 24px;
+                height: 24px;
+                animation: spin 1s linear infinite;
+                margin: 0 auto;
+            }
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="error-icon">❌</div>
+            <h1>Ödeme Başarısız</h1>
+            <p>Ödeme işlemi tamamlanamadı.</p>
+            <p>Uygulamaya yönlendiriliyorsunuz...</p>
+            <div class="loading">
+                <div class="spinner"></div>
+            </div>
         </div>
-    </div>
-    
-    <script>
-        // Add payment completion markers for webview detection
-        window.paymentCompleted = true;
-        window.paymentStatus = 'failed';
-        
-        // Automatically close after 3 seconds
-        setTimeout(() => {
-            window.close();
-        }, 3000);
-    </script>
-</body>
-</html> 
+
+        <script>
+            // Add payment completion markers for webview detection
+            window.paymentCompleted = true;
+            window.paymentStatus = "failed";
+
+            // Notify parent window if in iframe or popup
+            try {
+                if (window.parent && window.parent !== window) {
+                    window.parent.postMessage(
+                        {
+                            type: "PAYMENT_COMPLETED",
+                            status: "failed",
+                        },
+                        "*"
+                    );
+                }
+
+                if (window.opener) {
+                    window.opener.postMessage(
+                        {
+                            type: "PAYMENT_COMPLETED",
+                            status: "failed",
+                        },
+                        "*"
+                    );
+                }
+            } catch (e) {
+                console.log("Unable to communicate with parent window:", e);
+            }
+
+            // Update document title for detection
+            document.title = "PAYMENT_COMPLETED_failed";
+
+            // Automatically close after 3 seconds
+            setTimeout(() => {
+                try {
+                    window.close();
+                } catch (e) {
+                    console.log("Unable to close window:", e);
+                }
+            }, 3000);
+
+            // Show manual close button after 5 seconds if window didn't close
+            setTimeout(() => {
+                const container = document.querySelector(".container");
+                if (container) {
+                    container.innerHTML +=
+                        '<button onclick="window.close()" style="margin-top: 20px; padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">Bu Pencereyi Kapat</button>';
+                }
+            }, 5000);
+        </script>
+    </body>
+</html>
