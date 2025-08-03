@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terat - Maç Davet</title>
+  
+  <!-- Open Graph tags for social sharing -->
+  <meta property="og:title" content="Terat - Futbol Maçına Davet" />
+  <meta property="og:description" content="Arkadaşın seni futbol maçına davet ediyor! Terat ile hemen katıl." />
+  <meta property="og:image" content="/icons/Icon-512.png" />
+  <meta property="og:url" content="https://terat.app" />
+  <meta property="og:type" content="website" />
+  
+  <!-- Twitter Card tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Terat - Futbol Maçına Davet" />
+  <meta name="twitter:description" content="Arkadaşın seni futbol maçına davet ediyor! Terat ile hemen katıl." />
+  <meta name="twitter:image" content="/icons/Icon-512.png" />
+  
+  <style>
+    body {
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #34A853 0%, #2E7D32 100%);
+      color: white;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    
+    .container {
+      max-width: 500px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 40px 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .logo {
+      font-size: 48px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: white;
+    }
+    
+    .title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    
+    .subtitle {
+      font-size: 16px;
+      opacity: 0.9;
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+    
+    .button {
+      background: white;
+      color: #34A853;
+      border: none;
+      border-radius: 12px;
+      padding: 15px 30px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      margin: 10px;
+    }
+    
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .loading {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-top: 20px;
+    }
+    
+    .football-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        margin: 10px;
+        padding: 30px 15px;
+      }
+      
+      .logo {
+        font-size: 36px;
+      }
+      
+      .title {
+        font-size: 20px;
+      }
+      
+      .button {
+        font-size: 16px;
+        padding: 12px 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="football-icon">⚽</div>
+    <div class="logo">TERAT</div>
+    <div class="title">Futbol Maçına Davet Edildin!</div>
+    <div class="subtitle">
+      Arkadaşın seni maça davet ediyor.<br>
+      Terat uygulamasını aç ve hemen katıl!
+    </div>
+    
+    <a href="#" class="button" id="openApp">Uygulamayı Aç</a>
+    <a href="https://play.google.com/store/apps/details?id=com.example.terat_app" class="button">Google Play'den İndir</a>
+    
+    <div class="loading" id="loading" style="display: none;">
+      Uygulama açılıyor...
+    </div>
+  </div>
+
+  <script>
+    // Get match ID from URL
+    function getMatchIdFromUrl() {
+      const path = window.location.pathname;
+      const parts = path.split('/');
+      if (parts.length >= 3 && parts[1] === 'match') {
+        return parts[2];
+      }
+      return null;
+    }
+    
+    // Try to open the app with deep link
+    function openApp() {
+      const matchId = getMatchIdFromUrl();
+      if (!matchId) {
+        console.error('No match ID found in URL');
+        return;
+      }
+      
+      const appScheme = `terat://match/${matchId}`;
+      const androidIntent = `intent://match/${matchId}#Intent;scheme=terat;package=com.example.terat_app;end`;
+      const iosUniversalLink = `https://terat.app/match/${matchId}`;
+      
+      const loadingEl = document.getElementById('loading');
+      loadingEl.style.display = 'block';
+      
+      // Try to open the app
+      if (/Android/i.test(navigator.userAgent)) {
+        // Android
+        window.location.href = androidIntent;
+      } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        // iOS
+        window.location.href = iosUniversalLink;
+      } else {
+        // Desktop or other - redirect to web app or show download options
+        window.location.href = appScheme;
+      }
+      
+      // Fallback after 2 seconds
+      setTimeout(() => {
+        loadingEl.style.display = 'none';
+        alert('Uygulama bulunamadı. Lütfen App Store veya Google Play\'den indirin.');
+      }, 2000);
+    }
+    
+    // Set up the open app button
+    document.getElementById('openApp').addEventListener('click', function(e) {
+      e.preventDefault();
+      openApp();
+    });
+    
+    // Auto-redirect for supported platforms
+    window.addEventListener('load', function() {
+      // Auto-open only on mobile devices
+      if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        setTimeout(openApp, 1000);
+      }
+    });
+  </script>
+</body>
+</html> 

@@ -1,11 +1,11 @@
 {
-    "name": "terat_app",
-    "short_name": "terat_app",
+    "name": "TERAT - Futbol Maçları",
+    "short_name": "TERAT",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#34A853",
+    "theme_color": "#34A853",
+    "description": "Terat - Futbol maçları organize edin ve katılın. Halı saha rezervasyonları ve maç organizasyonu için en iyi platform.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
